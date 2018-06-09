@@ -19,8 +19,8 @@ class TestUserService(BaseTestCase):
 			response = self.client.post(
 				'/users',
 				data=json.dumps({
-					'username': 'zhenwei',
-					'email': 'iamaprotoss@gmail.com',
+					'username': 'test',
+					'email': 'test@gmail.com',
 					'password': 'randompassword'
 				}),
 				content_type='application/json',
@@ -28,7 +28,7 @@ class TestUserService(BaseTestCase):
 			data = json.loads(response.data.decode())
 			self.assertEqual(response.status_code, 201)
 			self.assertIn('success', data['status'])
-			self.assertIn('iamaprotoss@gmail.com was added!', data['message'])
+			self.assertIn('test@gmail.com was added!', data['message'])
 
 
 	def test_add_user_invalid_json(self):
@@ -49,7 +49,7 @@ class TestUserService(BaseTestCase):
 			response = self.client.post(
 				'/users',
 				data=json.dumps({
-					'email': 'iamaprotoss@gmail.com'
+					'email': 'test@gmail.com'
 				}),
 				content_type='application/json',
 			)
@@ -64,8 +64,8 @@ class TestUserService(BaseTestCase):
 			response = self.client.post(
 				'/users',
 				data=json.dumps({
-					'username': 'zhenwei',
-					'email': 'iamaprotoss@gmail.com'
+					'username': 'test',
+					'email': 'test@gmail.com'
 				}),
 				content_type='application/json',
 			)
@@ -80,8 +80,8 @@ class TestUserService(BaseTestCase):
 			self.client.post(
 				'/users',
 				data=json.dumps({
-					'username': 'zhenwei',
-					'email': 'iamaprotoss@gmail.com',
+					'username': 'test',
+					'email': 'test@gmail.com',
 					'password': 'randompassword',
 				}),
 				content_type='application/json',
@@ -89,8 +89,8 @@ class TestUserService(BaseTestCase):
 			response = self.client.post(
 				'/users',
 				data=json.dumps({
-					'username': 'zhenwei',
-					'email': 'iamaprotoss@gmail.com',
+					'username': 'test2',
+					'email': 'test@gmail.com',
 					'password': 'randompassword',
 				}),
 				content_type='application/json',
@@ -102,15 +102,15 @@ class TestUserService(BaseTestCase):
 
 
 	def test_single_user(self):
-		user = User(username='zhenwei', email='iamaprotoss@gmail.com', password='randompassword')
+		user = User(username='test', email='test@gmail.com', password='randompassword')
 		db.session.add(user)
 		db.session.commit()
 		with self.client:
 			response = self.client.get(f'/users/{user.id}')
 			data = json.loads(response.data.decode())
 			self.assertEqual(response.status_code, 200)
-			self.assertIn('zhenwei', data['data']['username'])
-			self.assertIn('iamaprotoss@gmail.com', data['data']['email'])
+			self.assertIn('test', data['data']['username'])
+			self.assertIn('test@gmail.com', data['data']['email'])
 			self.assertIn('success', data['status'])
 
 

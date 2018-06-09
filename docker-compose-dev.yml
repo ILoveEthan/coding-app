@@ -1,4 +1,4 @@
-version: '3.0'
+version: '3.4'
 
 services:
 
@@ -7,8 +7,8 @@ services:
     build:
       context: ./services/users
       dockerfile: Dockerfile-dev
-    volumes:
-      - './services/users:/usr/src/app'
+    #volumes:
+    #  - './services/users:/usr/src/app'
     ports:
       - 5001:5000
     environment:
@@ -16,6 +16,7 @@ services:
       - APP_SETTINGS=project.config.DevelopmentConfig
       - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev
       - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
+      - SECRET_KEY=123456
     depends_on:
       - users-db
     links:
@@ -37,14 +38,15 @@ services:
     build:
       context: ./services/client
       dockerfile: Dockerfile-dev
-    volumes:
-      - './services/client:/usr/src/app'
-      - '/usr/src/app/node_modules'
+    #volumes:
+    #  - './services/client/src:/usr/src/app/src'
+    #  - './services/client/public:/usr/src/app/public'
+    #  - './services/client/src:/usr/src/app/src'
     ports:
       - '3007:3000'
     environment:
       - NODE_ENV=development
-      - REACT_APP_USERS_SERVICE_URL=http://0.0.0.0:5001
+      - REACT_APP_USERS_SERVICE_URL=http://192.168.99.100
     depends_on:
       - users
     links:

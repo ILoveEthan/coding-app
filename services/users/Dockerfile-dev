@@ -1,9 +1,9 @@
-FROM python:3.6.4
+FROM python:3.6.5-jessie
 
-# install environment dependencies
+# install environment dependencies: 
+# if netcat is not installed, entrypoint.sh will not run
 RUN apt-get update -yqq \
-  && apt-get install -yqq --no-install-recommends \
-    netcat \
+  && apt-get install -yqq --no-install-recommends netcat \
   && apt-get -q clean
 
 

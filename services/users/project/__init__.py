@@ -18,6 +18,8 @@ def create_app(script_info=None):
 
 	from project.api.users import bp
 	app.register_blueprint(bp)
+	from project.api.auth import bp
+	app.register_blueprint(bp)
 
 	app.shell_context_processor({'app': app, 'db': db})
 	return app
