@@ -22,6 +22,7 @@ class Form extends Component {
   };
   componentDidMount() {
     this.clearForm();
+    this.validateForm();
   };
   componentWillReceiveProps(nextProps) {
     if (this.props.formType !== nextProps.formType) {

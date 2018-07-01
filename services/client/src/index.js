@@ -5,14 +5,14 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
 import App from './App.jsx';
-import isAuthenticated from './reducers';
+//import isAuthenticated from './reducers';
 
-const store = createStore(isAuthenticated);
+//const store = createStore(isAuthenticated);
 
 ReactDOM.render((
-  <Provider store={store}>
+  //<Provider store={store}>
     <Router>
       <App />
     </Router>
-  </Provider>
+  //</Provider>
 ), document.getElementById('root'))

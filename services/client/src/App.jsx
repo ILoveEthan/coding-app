@@ -9,6 +9,7 @@ import NavBar from './components/NavBar';
 import Form from './components/forms/Form';
 import Logout from './components/Logout';
 import UserStatus from './components/UserStatus';
+import Exercises from './components/Exercises';
 
 class App extends Component {
   constructor() {
@@ -63,7 +64,7 @@ class App extends Component {
               <br/>
               <Switch>
                 <Route exact path='/' render={() => (
-                  <UsersList users={this.state.users}/>                  
+                  <Exercises isAuthenticated={this.state.isAuthenticated}/>                  
                 )} />
                 <Route exact path='/about' component={About} />
                 <Route exact path='/register' render={() => (

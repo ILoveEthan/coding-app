@@ -46,14 +46,4 @@ const NavBar = ({ title, isAuthenticated }) => (
     </Navbar.Collapse>
   </Navbar>
 )
-
-NavBar.propTypes = {
-  title: PropTypes.string.isRequired,
-  isAuthenticated: PropTypes.bool.isRequired
-}
-
-const mapStateToProps = (state) => ({
-  isAuthenticated: state
-})
-
-export default connect(mapStateToProps, null)(NavBar);
+export default NavBar
