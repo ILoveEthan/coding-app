@@ -2,7 +2,7 @@ import unittest
 import coverage
 from flask.cli import FlaskGroup
 from project import create_app, db
-#from project.api.models import Exercise
+from project.api.models import Exercise
 
 COV = coverage.coverage(
 	branch=True,
@@ -17,35 +17,35 @@ COV.start()
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
 
-#@cli.command()
-#def recreate_db():
-	#db.drop_all()
-	#db.create_all()
-	#db.session.commit()
-#
-#@cli.command()
-#def seed_db():
-    #"""Seeds the database."""
-    #db.session.add(Exercise(
-        #body=('Define a function called sum that takes two integers as '
-              #'arguments and returns their sum.'),
-        #test_code='sum(2, 3)',
-        #test_code_solution='5'
-    #))
-    #db.session.add(Exercise(
-        #body=('Define a function called reverse that takes a string as '
-              #'an argument and returns the string in reversed order.'),
-        #test_code='reverse("racecar")',
-        #test_code_solution='racecar'
-    #))
-    #db.session.add(Exercise(
-        #body=('Define a function called factorial that takes a random number '
-              #'as an argument and then returns the factorial of that given '
-              #'number.'),
-        #test_code='factorial(5)',
-        #test_code_solution='120'
-    #))
-    #db.session.commit()
+@cli.command()
+def recreate_db():
+	db.drop_all()
+	db.create_all()
+	db.session.commit()
+
+@cli.command()
+def seed_db():
+    """Seeds the database."""
+    db.session.add(Exercise(
+        body=('Define a function called sum that takes two integers as '
+              'arguments and returns their sum.'),
+        test_code='sum(2, 3)',
+        test_code_solution='5'
+    ))
+    db.session.add(Exercise(
+        body=('Define a function called reverse that takes a string as '
+              'an argument and returns the string in reversed order.'),
+        test_code='reverse("racecar")',
+        test_code_solution='racecar'
+    ))
+    db.session.add(Exercise(
+        body=('Define a function called factorial that takes a random number '
+              'as an argument and then returns the factorial of that given '
+              'number.'),
+        test_code='factorial(5)',
+        test_code_solution='120'
+    ))
+    db.session.commit()
 
 @cli.command()
 def test():
