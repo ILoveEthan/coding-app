@@ -31,6 +31,9 @@ if [[ "${env}" == "dev" ]]; then
   inspect $? client
   testcafe chrome e2e
   inspect $? e2e
+else
+  testcafe chrome e2e/index.test.js
+  inspect $? e2e
 fi
 
 if [ -n "${fails}" ]; then
