@@ -19,7 +19,7 @@ class App extends Component {
     	username: '',
     	email: '',
       admin: false,
-      title: 'Crypto App',
+      title: 'Coding App',
       isAuthenticated: false,
     };
     this.handleChange = this.handleChange.bind(this);
@@ -27,7 +27,7 @@ class App extends Component {
     this.logoutUser = this.logoutUser.bind(this);
   };
   componentWillMount() {
-    if (window.localStorage.getItem('authToken')) {
+    if (window.localStorage.hasOwnProperty('authToken')) {
       this.setState({ isAuthenticated: true});
     };
   };

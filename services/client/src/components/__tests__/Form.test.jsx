@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import renderer from 'react-test-renderer';
 import { MemoryRouter as Router, Switch, Redirect } from 'react-router-dom';
 
-import Form from '../Form';
+import Form from '../forms/Form';
 
 const testData = [
   {

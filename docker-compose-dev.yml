@@ -7,8 +7,6 @@ services:
     build:
       context: ./services/users
       dockerfile: Dockerfile-dev
-    #volumes:
-    #  - './services/users:/usr/src/app'
     ports:
       - 5001:5000
     environment:
@@ -70,10 +68,6 @@ services:
     build:
       context: ./services/client
       dockerfile: Dockerfile-dev
-    #volumes:
-    #  - './services/client/src:/usr/src/app/src'
-    #  - './services/client/public:/usr/src/app/public'
-    #  - './services/client/src:/usr/src/app/src'
     ports:
       - '3007:3000'
     environment:

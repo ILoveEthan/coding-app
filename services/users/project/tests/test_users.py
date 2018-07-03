@@ -4,6 +4,7 @@ import unittest
 from project.tests.base import BaseTestCase
 from project.api.models import User
 from project import db
+from project.tests.utils import add_user
 
 class TestUserService(BaseTestCase):
 	def test_users(self):
@@ -15,7 +16,20 @@ class TestUserService(BaseTestCase):
 
 
 	def test_add_user(self):
+		add_user('random', 'random@random', 'random')
+		user = User.query.filter_by(email='random@random').first()
+		user.admin = True
+		db.session.commit()
 		with self.client:
+			resp_login = self.client.post(
+				'/auth/login',
+				data=json.dumps({
+					'email': 'random@random',
+					'password': 'random'
+				}),
+				content_type='application/json'
+			)
+			token = json.loads(resp_login.data.decode())['auth_token']
 			response = self.client.post(
 				'/users',
 				data=json.dumps({
@@ -24,6 +38,7 @@ class TestUserService(BaseTestCase):
 					'password': 'randompassword'
 				}),
 				content_type='application/json',
+				headers={'Authorization': f'Bearer {token}'}
 			)
 			data = json.loads(response.data.decode())
 			self.assertEqual(response.status_code, 201)
@@ -32,11 +47,25 @@ class TestUserService(BaseTestCase):
 
 
 	def test_add_user_invalid_json(self):
+		add_user('random', 'random@random', 'random')
+		user = User.query.filter_by(email='random@random').first()
+		user.admin = True
+		db.session.commit()
 		with self.client:
+			resp_login = self.client.post(
+				'/auth/login',
+				data=json.dumps({
+					'email': 'random@random',
+					'password': 'random'
+				}),
+				content_type='application/json'
+			)
+			token = json.loads(resp_login.data.decode())['auth_token']
 			response = self.client.post(
 				'/users',
 				data=json.dumps({}),
 				content_type='application/json',
+				headers={'Authorization': f'Bearer {token}'}
 			)
 			data = json.loads(response.data.decode())
 			self.assertEqual(response.status_code, 400)
@@ -45,13 +74,27 @@ class TestUserService(BaseTestCase):
 
 
 	def test_add_user_invalid_json_keys(self):
+		add_user('random', 'random@random', 'random')
+		user = User.query.filter_by(email='random@random').first()
+		user.admin = True
+		db.session.commit()
 		with self.client:
+			resp_login = self.client.post(
+				'/auth/login',
+				data=json.dumps({
+					'email': 'random@random',
+					'password': 'random'
+				}),
+				content_type='application/json'
+			)
+			token = json.loads(resp_login.data.decode())['auth_token']
 			response = self.client.post(
 				'/users',
 				data=json.dumps({
 					'email': 'test@gmail.com'
 				}),
 				content_type='application/json',
+				headers={'Authorization': f'Bearer {token}'}
 			)
 			data = json.loads(response.data.decode())
 			self.assertEqual(response.status_code, 400)
@@ -60,7 +103,20 @@ class TestUserService(BaseTestCase):
 
 
 	def test_add_user_invalid_json_keys_no_password(self):
+		add_user('random', 'random@random', 'random')
+		user = User.query.filter_by(email='random@random').first()
+		user.admin = True
+		db.session.commit()
 		with self.client:
+			resp_login = self.client.post(
+				'/auth/login',
+				data=json.dumps({
+					'email': 'random@random',
+					'password': 'random'
+				}),
+				content_type='application/json'
+			)
+			token = json.loads(resp_login.data.decode())['auth_token']
 			response = self.client.post(
 				'/users',
 				data=json.dumps({
@@ -68,6 +124,7 @@ class TestUserService(BaseTestCase):
 					'email': 'test@gmail.com'
 				}),
 				content_type='application/json',
+				headers={'Authorization': f'Bearer {token}'}
 			)
 			data = json.loads(response.data.decode())
 			self.assertEqual(response.status_code, 400)
@@ -76,7 +133,20 @@ class TestUserService(BaseTestCase):
 
 
 	def test_add_user_duplicate_email(self):
+		add_user('random', 'random@random', 'random')
+		user = User.query.filter_by(email='random@random').first()
+		user.admin = True
+		db.session.commit()
 		with self.client:
+			resp_login = self.client.post(
+				'/auth/login',
+				data=json.dumps({
+					'email': 'random@random',
+					'password': 'random'
+				}),
+				content_type='application/json'
+			)
+			token = json.loads(resp_login.data.decode())['auth_token']
 			self.client.post(
 				'/users',
 				data=json.dumps({
@@ -85,6 +155,7 @@ class TestUserService(BaseTestCase):
 					'password': 'randompassword',
 				}),
 				content_type='application/json',
+				headers={'Authorization': f'Bearer {token}'}
 			)
 			response = self.client.post(
 				'/users',
@@ -94,6 +165,7 @@ class TestUserService(BaseTestCase):
 					'password': 'randompassword',
 				}),
 				content_type='application/json',
+				headers={'Authorization': f'Bearer {token}'}
 			)
 			data = json.loads(response.data.decode())
 			self.assertEqual(response.status_code, 400)

@@ -1,5 +1,4 @@
 import React from 'react';
-import AuthButton from './AuthButton';
 
 const About = () => (
   <div>
