@@ -1,0 +1,25 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "client",
+      "image": "%s.dkr.ecr.us-west-1.amazonaws.com/coding-app-client:staging",
+      "essential": true,
+      "memoryReservation": 300,
+      "portMappings": [
+        {
+          "hostPort": 0,
+          "protocol": "tcp",
+          "containerPort": 80
+        }
+      ],
+      "logConfiguration": {
+      	"logDriver": "awslogs",
+      	"options": {
+      	  "awslogs-group": "coding-app-client-stage",
+      	  "awslogs-region": "us-east-1"
+      	}
+      }
+    }
+  ],
+  "family": "coding-app-client-stage"
+}
