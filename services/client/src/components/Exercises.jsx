@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Glyphicon } from 'react-bootstrap';
 import AceEditor from 'react-ace';
+import axios from 'axios';
 import 'brace/mode/python';
 import 'brace/theme/solarized_dark';
+
 
 class Exercises extends Component {
   constructor (props) {
@@ -10,8 +12,14 @@ class Exercises extends Component {
   	this.state = {
   	  exercises: [],
   	  editor: {
-  	  	value: '# Enter your code here.'
-  	  }
+  	  	value: '# Enter your code here.',
+        button: {
+          isDisabled: false
+        },
+        isGrading: false,
+        isCorrect: false,
+        isIncorrect: false
+  	  },
   	};
   	this.onChange = this.onChange.bind(this);
   	this.submitExercise = this.submitExercise.bind(this);
@@ -20,36 +28,74 @@ class Exercises extends Component {
   	this.getExercises();
   };
   onChange(value) {
-  	this.setState({
-  	  editor: {
-  	  	value: value
-  	  }
-  	});
+    const newEditorState = Object.assign({}, this.state.editor, {value: value})
+  	this.setState(Object.assign({}, this.state, {editor: newEditorState}));
   };
   submitExercise(event) {
   	event.preventDefault();
-  	console.log(this.state.editor.value);
-  }
-  getExercises() {
-    const exercises = [
+    const newEditorState = Object.assign(
+      {}, 
+      this.state.editor,
       {
-  	    id:	0,
-  	    body:	`Define	a	function	called	sum	that	takes
-  	    two	integers	as	arguments	and	returns	their	sum.`
-      },
-      {
-  	    id:	1,
-  	    body:	`Define	a	function	called	reverse	that	takes	a	string
-  	    as	an	argument	and	returns	the	string	in	reversed	order.`
-      },
-      {
-  	    id:	2,
-  	    body:	`Define	a	function	called	factorial	that	takes	a	random
-  	    number	as	an	argument	and	then	returns	the	factorial	of	that
-  	    given	number.`,
+        isGrading: true,
+        isCorrect: false,
+        isIncorrect: false,
+        button: {
+          isDisabled: true
+        }
       }
-    ];
-    this.setState({ exercises: exercises });
+    )
+    this.setState(Object.assign({}, this.state, {editor: newEditorState}))
+    const data = { answer: this.state.editor.value };
+    const url = process.env.REACT_APP_API_GATEWAY_URL;
+    axios.post(url, data)
+    .then((res) => {
+      const newEditorState = Object.assign({}, this.state.editor)
+      newEditorState.isGrading = false
+      newEditorState.button.isDisabled = false
+      if (res.data == true) {newEditorState.isCorrect = true}
+      if (res.data == false) {newEditorState.isIncorrect = true}
+      this.setState(Object.assign({}, this.state, {editor: newEditorState}))
+      console.log(res) 
+    })
+    .catch((err) => {
+      const newEditorState = Object.assign(
+        {},
+        this.state.editor,
+        {
+          isGrading: false,
+          button: {
+            isDisabled: false
+          }
+        }
+      )
+      this.setState(Object.assign({}, this.state, {editor: newEditorState})) 
+      console.log(err)
+    })
+  };
+  getExercises() {
+    axios.get(`${process.env.REACT_APP_EXERCISES_SERVICE_URL}/exercises`)
+    .then((res) => { this.setState({ exercises: res.data.data.exercises }) })
+    .catch((err) => { console.log(err) }) 
+    //const exercises = [
+      //{
+  	    //id:	0,
+  	    //body:	`Define	a	function	called	sum	that	takes
+  	    //two	integers	as	arguments	and	returns	their	sum.`
+      //},
+      //{
+  	    //id:	1,
+  	    //body:	`Define	a	function	called	reverse	that	takes	a	string
+  	    //as	an	argument	and	returns	the	string	in	reversed	order.`
+      //},
+      //{
+  	    //id:	2,
+  	    //body:	`Define	a	function	called	factorial	that	takes	a	random
+  	    //number	as	an	argument	and	then	returns	the	factorial	of	that
+  	    //given	number.`,
+      //}
+    //];
+    //this.setState({ exercises: exercises });
   };
   render() {
   	return (
@@ -87,7 +133,36 @@ class Exercises extends Component {
               onChange={this.onChange}
             />
             {this.props.isAuthenticated &&
-              <Button bsStyle="primary" bsSize="small" onClick={this.submitExercise}>Run Code</Button>
+              <Button 
+                bsStyle="primary" 
+                bsSize="small" 
+                onClick={this.submitExercise}
+                disabled={this.state.editor.button.isDisabled}
+              >Run Code</Button>
+            }
+            {this.state.editor.isGrading && 
+              <h4>
+                &nbsp;
+                <Glyphicon glyph="repeat" className="glyphicon-spin"/>
+                &nbsp;
+                Grading...
+              </h4>
+            }
+            {this.state.editor.isCorrect &&
+              <h4>
+                &nbsp;
+                <Glyphicon glyph="ok" className="glyphicon-correct"/>
+                &nbsp;
+                Correct!
+              </h4>
+            }
+            {this.state.editor.isIncorrect &&
+              <h4>
+                &nbsp;
+                <Glyphicon glyph="remove" className="glyphicon-incorrect"/>
+                &nbsp;
+                Incorrect!
+              </h4>
             }
             <br/><br/>
   	      </div>
