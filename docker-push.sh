@@ -37,13 +37,13 @@ then
     docker tag $EXERCISES:$COMMIT $REPO/$EXERCISES:$TAG
     docker push $REPO/$EXERCISES:$TAG
 
-    docker build $EXERCISES_DB_REPO -t $EXERCISES_DB:$COMMIT -f Dockerfile-stage
+    docker build $EXERCISES_DB_REPO -t $EXERCISES_DB:$COMMIT -f Dockerfile
     docker tag $EXERCISES_DB:$COMMIT $REPO/$EXERCISES_DB:$TAG
     docker push $REPO/$EXERCISES_DB:$TAG
 
-    docker build $CLIENT_REPO -t $CLIENT:$COMMIT -f Dockerfile-stage
-        --build-arg REACT_APP_USERS_SERVICE_URL=$REACT_APP_USERS_SERVICE_URL
-        --build-arg REACT_APP_EXERCISES_SERVICE_URL=$REACT_APP_EXERCISES_SERVICE_URL
+    docker build $CLIENT_REPO -t $CLIENT:$COMMIT -f Dockerfile-stage \
+        --build-arg REACT_APP_USERS_SERVICE_URL=$REACT_APP_USERS_SERVICE_URL \
+        --build-arg REACT_APP_EXERCISES_SERVICE_URL=$REACT_APP_EXERCISES_SERVICE_URL \
         --build-arg REACT_APP_API_GATEWAY_URL=$REACT_APP_API_GATEWAY_URL
     docker tag $CLIENT:$COMMIT $REPO/$CLIENT:$TAG
     docker push $REPO/$CLIENT:$TAG
