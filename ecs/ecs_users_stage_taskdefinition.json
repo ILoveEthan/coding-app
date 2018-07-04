@@ -2,7 +2,7 @@
   "containerDefinitions": [
     {
       "name": "users",
-      "image": "599583304279.dkr.ecr.us-east-1.amazonaws.com/coding-app-users:staging",
+      "image": "%s.dkr.ecr.us-east-1.amazonaws.com/coding-app-users:staging",
       "essential": true,
       "memoryReservation": 300,
       "links": [
@@ -43,7 +43,7 @@
     },
     {
       "name": "users-db",
-      "image": "599583304279.dkr.ecr.us-east-1.amazonaws.com/coding-app-users_db:staging",
+      "image": "%s.dkr.ecr.us-east-1.amazonaws.com/coding-app-users_db:staging",
       "essential": true,
       "memoryReservation": 300,
       "portMappings": [
@@ -72,5 +72,5 @@
       ]
     }
   ],
-  "family": "coding-app-users-stage",
+  "family": "coding-app-users-stage"
 }
