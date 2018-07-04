@@ -26,6 +26,10 @@ env:
     - USERS_REPO=${MAIN_REPO}#${TRAVIS_BRANCH}:services/users
     - USERS_DB=coding-app-users_db
     - USERS_DB_REPO=${MAIN_REPO}#${TRAVIS_BRANCH}:services/users/project/db
+    - EXERCISES=coding-app-exercises
+    - EXERCISES_REPO=${MAIN_REPO}#${TRAVIS_BRANCH}:servicies/exercises
+    - EXERCISES_DB=coding-app-exercises_db
+    - EXERCISES_DB_REPO=${MAIN_REPO}#${TRAVIS_BRANCH}:servicies/exercises/project/db
     - CLIENT=coding-app-client
     - CLIENT_REPO=${MAIN_REPO}#${TRAVIS_BRANCH}:services/client
 
@@ -38,6 +42,8 @@ before_install:
 before_script:
   - export TEST_URL=http://127.0.0.1
   - export REACT_APP_USERS_SERVICE_URL=http://127.0.0.1
+  - export REACT_APP_EXERCISES_SERVICE_URL=http://127.0.0.1
+  - export REACT_APP_API_GATEWAY_URL=http://API_GATEWAY_URL
   - export SECRET_KEY=123456
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
