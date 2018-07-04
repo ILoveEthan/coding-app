@@ -44,7 +44,7 @@ then
       update_service
 
       # client
-      service="coding-app-client-staging-cluster"
+      service="coding-app-client-stage-service"
       template="ecs_client_stage_taskdefinition.json"
       task_template=$(cat "ecs/$template")
       task_def=$(printf "$task_template" $AWS_ACCOUNT_ID)
