@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Glyphicon } from 'react-bootstrap';
+import { Button, ButtonGroup, Glyphicon } from 'react-bootstrap';
 import AceEditor from 'react-ace';
 import axios from 'axios';
 import 'brace/mode/python';
@@ -11,6 +11,7 @@ class Exercises extends Component {
   	super(props)
   	this.state = {
   	  exercises: [],
+      index: 0,
   	  editor: {
   	  	value: '# Enter your code here.',
         button: {
@@ -20,17 +21,52 @@ class Exercises extends Component {
         isCorrect: false,
         isIncorrect: false
   	  },
+      showButtons: {
+        prev: false,
+        next: false
+      }
   	};
   	this.onChange = this.onChange.bind(this);
   	this.submitExercise = this.submitExercise.bind(this);
+    this.prevExercise = this.prevExercise.bind(this);
+    this.nextExercise = this.nextExercise.bind(this);
   };
   componentDidMount() {
   	this.getExercises();
   };
   onChange(value) {
     const newEditorState = Object.assign({}, this.state.editor, {value: value})
-  	this.setState(Object.assign({}, this.state, {editor: newEditorState}));
+  	this.setState({editor: newEditorState});
   };
+  resetEditor() {
+    this.setState({
+      editor: {
+        value: '# Enter your code here.',
+        button: {
+          isDisabled: false
+        },
+        isGrading: false,
+        isCorrect: false,
+        isIncorrect: false
+      }
+    })
+  }
+  prevExercise() {
+    const newShowButtonsState = Object.assign({}, this.state.showButtons)
+    const newIndexState = this.state.index - 1
+    if (newIndexState == 0) {newShowButtonsState.prev = false}
+    if (newIndexState < this.state.exercises.length -1 ) {newShowButtonsState.next = true}
+    this.setState({showButtons: newShowButtonsState, index: newIndexState})
+    this.resetEditor()
+  }
+  nextExercise() {
+    const newShowButtonsState = Object.assign({}, this.state.showButtons)
+    const newIndexState = this.state.index + 1
+    if (newIndexState == this.state.exercises.length - 1) {newShowButtonsState.next = false}
+    if (newIndexState > 0) {newShowButtonsState.prev = true}
+    this.setState({showButtons: newShowButtonsState, index: newIndexState})
+    this.resetEditor()
+  }
   submitExercise(event) {
   	event.preventDefault();
     const newEditorState = Object.assign(
@@ -45,8 +81,12 @@ class Exercises extends Component {
         }
       }
     )
-    this.setState(Object.assign({}, this.state, {editor: newEditorState}))
-    const data = { answer: this.state.editor.value };
+    this.setState({editor: newEditorState})
+    const data = { 
+      answer: this.state.editor.value,
+      test: this.state.exercises[this.state.index].test_code,
+      solution: this.state.exercises[this.state.index].test_code_solution
+    };
     const url = process.env.REACT_APP_API_GATEWAY_URL;
     axios.post(url, data)
     .then((res) => {
@@ -55,7 +95,7 @@ class Exercises extends Component {
       newEditorState.button.isDisabled = false
       if (res.data == true) {newEditorState.isCorrect = true}
       if (res.data == false) {newEditorState.isIncorrect = true}
-      this.setState(Object.assign({}, this.state, {editor: newEditorState}))
+      this.setState({editor: newEditorState})
       console.log(res) 
     })
     .catch((err) => {
@@ -69,13 +109,19 @@ class Exercises extends Component {
           }
         }
       )
-      this.setState(Object.assign({}, this.state, {editor: newEditorState})) 
+      this.setState({editor: newEditorState}) 
       console.log(err)
     })
   };
   getExercises() {
     axios.get(`${process.env.REACT_APP_EXERCISES_SERVICE_URL}/exercises`)
-    .then((res) => { this.setState({ exercises: res.data.data.exercises }) })
+    .then((res) => {
+      const newState = Object.assign({}, this.state)
+      newState.exercises = res.data.data.exercises
+      newState.index = 0
+      if (newState.exercises.length > 1) { newState.showButtons.next = true} 
+      this.setState(newState) 
+    })
     .catch((err) => { console.log(err) }) 
     //const exercises = [
       //{
@@ -115,12 +161,12 @@ class Exercises extends Component {
   	      </div>
   	    }
   	    {this.state.exercises.length &&
-  	      <div key={this.state.exercises[0].id}>
-  	        <h4>{this.state.exercises[0].body}</h4>
+  	      <div key={this.state.exercises[this.state.index].id}>
+  	        <h4>{this.state.exercises[this.state.index].body}</h4>
   	        <AceEditor
               mode="python"
               theme="solarized_dark"
-              name={(this.state.exercises[0].id).toString()}
+              name={(this.state.exercises[this.state.index].id).toString()}
               fontSize={14}
               height={'175px'}
               showPrintMargin={true}
@@ -167,6 +213,22 @@ class Exercises extends Component {
             <br/><br/>
   	      </div>
   	    }
+        <ButtonGroup>
+          { this.state.showButtons.prev &&
+            <Button
+              bsStyle="success" 
+              bsSize="small"
+              onClick={() => this.prevExercise()}
+            >&lt; Prev</Button>
+          }
+          { this.state.showButtons.next &&
+            <Button
+              bsStyle="success" 
+              bsSize="small" 
+              onClick={() => this.nextExercise()}
+            >Next &gt;</Button>
+          }
+        </ButtonGroup>
   	  </div>
     )
   };
