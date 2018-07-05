@@ -27,9 +27,9 @@ env:
     - USERS_DB=coding-app-users_db
     - USERS_DB_REPO=${MAIN_REPO}#${TRAVIS_BRANCH}:services/users/project/db
     - EXERCISES=coding-app-exercises
-    - EXERCISES_REPO=${MAIN_REPO}#${TRAVIS_BRANCH}:servicies/exercises
+    - EXERCISES_REPO=${MAIN_REPO}#${TRAVIS_BRANCH}:services/exercises
     - EXERCISES_DB=coding-app-exercises_db
-    - EXERCISES_DB_REPO=${MAIN_REPO}#${TRAVIS_BRANCH}:servicies/exercises/project/db
+    - EXERCISES_DB_REPO=${MAIN_REPO}#${TRAVIS_BRANCH}:services/exercises/project/db
     - CLIENT=coding-app-client
     - CLIENT_REPO=${MAIN_REPO}#${TRAVIS_BRANCH}:services/client
 
